@@ -1,4 +1,4 @@
-from menu_option_one.search_for_data_of_specific_stock import SearchForStockData
+from menu_option_one.search_for_data_of_specific_stock_yfinance import SearchForStockData
 
 
 def run_bot():

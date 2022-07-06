@@ -14,7 +14,7 @@ class SearchForStockData:
         self.ticker_data = yf.Ticker(self.ticker_symbol)
 
         # get the historical prices for this ticker
-        ticker_df = self.ticker_data.history(period='1d', start='2010-1-1', end='2020-1-25')
+        # ticker_df = self.ticker_data.history(period='1d', start='2010-1-1', end='2020-1-25')
 
         # see your data
         # print(ticker_df)
@@ -23,7 +23,7 @@ class SearchForStockData:
         self.info = self.ticker_data.info
 
         # get historical market data
-        hist = self.ticker_data.history(period="max")
+        # hist = self.ticker_data.history(period="max")
 
         # show actions (dividends, splits)
         # ticker_data.actions
@@ -120,7 +120,16 @@ class SearchForStockData:
         except:
             print(f'{self.ticker_symbol} raised an error')
 
+    def print_stock_info(self):
+        """
+
+        :return:
+        """
+        for key, value in self.info.items():
+            # if key == 'trailingEps':
+            print(f'{key}: {value}')
+
 
 if __name__ == '__main__':
-    run = SearchForStockData('orc')
-    run.benjamin_graham_intrinsic_value()
+    run = SearchForStockData('xyld')
+    run.print_stock_info()
