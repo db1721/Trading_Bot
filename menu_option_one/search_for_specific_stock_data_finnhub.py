@@ -44,18 +44,26 @@ for key, value in eps_dict.items():
                         eps = value2
                         count += 1
                         break
-print(eps)
+# print(eps)
 
 # Growth Rate
 growth_rate = 0
 analysis = ticker_data.get_analysis(as_dict=True)
-print(analysis)
+# print(analysis)
+continue_loop = True
+growth_rate_list_reverse = ['+5Y', '+1Y', '0Y', '+1Q', '0Q']
+growth_rate_list = ['0Q', '+1Q', '0Y', '+1Y', '+5Y']
+growth_rate_dict = {}
+
 for key, value in analysis.items():
     if key == 'Growth':
-        for key2, value2 in value.items():
-            if key2 == '+5Y':
-                # print(f'Growth Rate: {value2}')
-                growth_rate = value2
+        growth_rate_dict = value
+        break
+
+for item in growth_rate_list:
+    if item in growth_rate_dict.keys() and str(growth_rate_dict[item]) != "nan":
+        # print(f'Growth Rate: {growth_rate_dict[item]}')
+        growth_rate = growth_rate_dict[item]
         break
 #
 # # Company Executives
@@ -297,8 +305,8 @@ for key, value in analysis.items():
 # # USA Spending
 # print(finnhub_client.stock_usa_spending("LMT", "2021-01-01", "2022-06-15"))
 
-# ben_graham = Calculations()
-# ben_graham.benjamin_graham_intrinsic_value()
+ben_graham = Calculations('IEP')
+ben_graham.benjamin_graham_intrinsic_value(eps, growth_rate)
 
 # if __name__ == '__main__':
 #     run = SearchForStockData('xyld')

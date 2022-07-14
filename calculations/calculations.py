@@ -1,5 +1,9 @@
 class Calculations:
     def __init__(self, ticker_symbol):
+        """
+        https://www.omnicalculator.com/finance#s-8
+        :param ticker_symbol:
+        """
         self.symbol = ticker_symbol
 
     def benjamin_graham_intrinsic_value(self, earnings_per_share, stock_growth_rate):
