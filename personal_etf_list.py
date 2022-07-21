@@ -5,11 +5,11 @@ etf_list = ['ORC', 'CSCO', 'IBM', 'CRF', 'CLM', 'ARR', 'IVR', 'NYMT', 'AGNC', 'E
             'DIVO', 'IRM', 'DHS', 'MAIN', 'VICI', 'ARCC', 'AMZA', 'DKL', 'OUSA', 'MRO', 'LTC', 'PSEC', 'UVV', 'TEF',
             'CIF', 'CSSEP', 'PBT', 'VALE', 'CRT', 'TWO', 'GLDI', 'NUSI', 'USOI', 'SBLK', 'SLVO', 'ZIM']
 
-single_list = ['mvo', 'clm']
+simple_list = ['CLM', 'RYLD']
 
 iv_dict = {}
 
-for stock in etf_list:
+for stock in simple_list:
     run = SearchForStockData(stock)
     try:
         iv_dict.update(run.benjamin_graham_intrinsic_value())

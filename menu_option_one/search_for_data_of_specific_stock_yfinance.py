@@ -126,32 +126,7 @@ class SearchForStockData:
             #     print(f'{key}: {value}')
 
             try:
-                # Get growth
-                analysis = self.ticker_data.get_analysis(as_dict=True)
-                for key, value in analysis.items():
-                    # print(f'{key}: {value}')
-                    if key == 'Growth':
-                        for key2, value2 in value.items():
-                            if key2 == '0Q' and str(value2) != 'nan' and str(value2) != 'None':
-                                # print(f'Growth Rate (0Q): {value2}')
-                                growth_rate = value2
-                                break
-                            elif key2 == '+1Q' and str(value2) != 'nan' and str(value2) != 'None':
-                                # print(f'Growth Rate (+1Q): {value2}')
-                                growth_rate = value2
-                                break
-                            elif key2 == '0Y' and str(value2) != 'nan' and str(value2) != 'None':
-                                # print(f'Growth Rate (0Y): {value2}')
-                                growth_rate = value2
-                                break
-                            elif key2 == '+1Y' and str(value2) != 'nan' and str(value2) != 'None':
-                                # print(f'Growth Rate (+1Y): {value2}')
-                                growth_rate = value2
-                                break
-                            elif key2 == '+5Y' and str(value2) != 'nan' and str(value2) != 'None':
-                                # print(f'Growth Rate (+5Y): {value2}')
-                                growth_rate = value2
-                                break
+                self._get_growth(self.ticker_symbol)
             except:
                 pass
 
@@ -188,26 +163,75 @@ class SearchForStockData:
             acceptable_buy_price = margin_of_safety * intrinsic_value
             formatted_acceptable_buy_price = "{:0.2f}".format(acceptable_buy_price)
 
-            # print(f'{self.ticker_symbol} Intrinsic Value ${formatted_intrinsic_value} at '
-            #       f'${formatted_acceptable_buy_price} at a value of {formatted_value_difference}%')
-            try:
-                iv_dict.update({self.ticker_symbol: f'{formatted_value_difference}% @ ${formatted_acceptable_buy_price} '
-                                                    f'for a rebate of ${current_price-formatted_acceptable_buy_price}'})
-                return iv_dict
-            except:
-                pass
-        except:
-            # print(f'{self.ticker_symbol} does not have Intrinsic Value')
-            pass
+            # Savings
+            savings = float(current_price) - float(formatted_acceptable_buy_price)
+            formatted_savings = "{:0.2f}".format(savings)
 
-    def print_stock_info(self):
+            print(f'{self.ticker_symbol}: {formatted_value_difference}% @ ${formatted_acceptable_buy_price} '
+                  f'for a rebate of ${formatted_savings}')
+
+            return iv_dict.update({self.ticker_symbol: [value_difference, acceptable_buy_price]})
+        except:
+            try:
+                # Get stock price
+                holding_dict = {}
+                for key, value in self.info.items():
+                    # print(f'{key}: {value}')
+                    if key == 'holdings':
+                        print(f'{key}: {value}')
+                        for i in value:
+                            symbol = ''
+                            holding_percentage = 0.00
+                            for key2, value2 in i.items():
+                                if key2 == 'symbol' and str(value2) != 'None' and str(value2) != 'nan' and str(value2) != '':
+                                    # print(f'Symbol: {value2}')
+                                    symbol = value2
+                                if key2 == 'holdingPercent' and str(value2) != 'None' and str(value2) != 'nan':
+                                    # print(f'Holding Percentage: {value2}')
+                                    holding_percentage = value2
+                                if symbol != '' and holding_percentage > 0:
+                                    holding_dict.update({symbol: holding_percentage})
+
+                for stock, percent in holding_dict.items():
+                    print(f'{stock}: {percent}')
+            except:
+                print(f'{self.ticker_symbol} does not have Intrinsic Value')
+                pass
+
+    def _get_growth(self, ticker_to_analyze):
         """
 
         :return:
         """
-        for key, value in self.info.items():
-            # if key == 'trailingEps':
-            print(f'{key}: {value}')
+        # Get new stocks ticker data
+        self.ticker_data = yf.Ticker(ticker_to_analyze.upper())
+
+        # Get growth
+        analysis = self.ticker_data.get_analysis(as_dict=True)
+        for key, value in analysis.items():
+            # print(f'{key}: {value}')
+            if key == 'Growth':
+                for key2, value2 in value.items():
+                    if key2 == '0Q' and str(value2) != 'nan' and str(value2) != 'None':
+                        # print(f'Growth Rate (0Q): {value2}')
+                        growth_rate = value2
+                        break
+                    elif key2 == '+1Q' and str(value2) != 'nan' and str(value2) != 'None':
+                        # print(f'Growth Rate (+1Q): {value2}')
+                        growth_rate = value2
+                        break
+                    elif key2 == '0Y' and str(value2) != 'nan' and str(value2) != 'None':
+                        # print(f'Growth Rate (0Y): {value2}')
+                        growth_rate = value2
+                        break
+                    elif key2 == '+1Y' and str(value2) != 'nan' and str(value2) != 'None':
+                        # print(f'Growth Rate (+1Y): {value2}')
+                        growth_rate = value2
+                        break
+                    elif key2 == '+5Y' and str(value2) != 'nan' and str(value2) != 'None':
+                        # print(f'Growth Rate (+5Y): {value2}')
+                        growth_rate = value2
+                        break
 
 
 if __name__ == '__main__':
