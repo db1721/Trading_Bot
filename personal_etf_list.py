@@ -7,8 +7,14 @@ etf_list = ['ORC', 'CSCO', 'IBM', 'CRF', 'CLM', 'ARR', 'IVR', 'NYMT', 'AGNC', 'E
 
 single_list = ['mvo', 'clm']
 
+iv_dict = {}
+
 for stock in etf_list:
     run = SearchForStockData(stock)
-    iv_dict = run.benjamin_graham_intrinsic_value()
-    for key, value in iv_dict.items():
-        print(f'{key}: {value}')
+    try:
+        iv_dict.update(run.benjamin_graham_intrinsic_value())
+    except:
+        pass
+
+for key, value in iv_dict.items():
+    print(f'{key}: {value}')

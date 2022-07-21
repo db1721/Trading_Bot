@@ -190,9 +190,12 @@ class SearchForStockData:
 
             # print(f'{self.ticker_symbol} Intrinsic Value ${formatted_intrinsic_value} at '
             #       f'${formatted_acceptable_buy_price} at a value of {formatted_value_difference}%')
-
-            iv_dict.update({self.ticker_symbol: f'{formatted_value_difference}%'})
-            return iv_dict
+            try:
+                iv_dict.update({self.ticker_symbol: f'{formatted_value_difference}% @ ${formatted_acceptable_buy_price} '
+                                                    f'for a rebate of ${current_price-formatted_acceptable_buy_price}'})
+                return iv_dict
+            except:
+                pass
         except:
             # print(f'{self.ticker_symbol} does not have Intrinsic Value')
             pass
