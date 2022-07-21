@@ -62,7 +62,7 @@ for key, value in analysis.items():
 
 for item in growth_rate_list:
     if item in growth_rate_dict.keys() and str(growth_rate_dict[item]) != "nan":
-        # print(f'Growth Rate: {growth_rate_dict[item]}')
+        print(f'Growth Rate: {growth_rate_dict[item]}')
         growth_rate = growth_rate_dict[item]
         break
 #
@@ -305,9 +305,9 @@ for item in growth_rate_list:
 # # USA Spending
 # print(finnhub_client.stock_usa_spending("LMT", "2021-01-01", "2022-06-15"))
 
-ben_graham = Calculations('IEP')
-ben_graham.benjamin_graham_intrinsic_value(eps, growth_rate)
+# ben_graham = Calculations('IEP')
+# ben_graham.benjamin_graham_intrinsic_value(eps, growth_rate)
 
 # if __name__ == '__main__':
-#     run = SearchForStockData('xyld')
+#     run = SearchForStockData('iep')
 #     run.print_stock_info()

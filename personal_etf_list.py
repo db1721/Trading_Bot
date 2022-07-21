@@ -5,8 +5,10 @@ etf_list = ['ORC', 'CSCO', 'IBM', 'CRF', 'CLM', 'ARR', 'IVR', 'NYMT', 'AGNC', 'E
             'DIVO', 'IRM', 'DHS', 'MAIN', 'VICI', 'ARCC', 'AMZA', 'DKL', 'OUSA', 'MRO', 'LTC', 'PSEC', 'UVV', 'TEF',
             'CIF', 'CSSEP', 'PBT', 'VALE', 'CRT', 'TWO', 'GLDI', 'NUSI', 'USOI', 'SBLK', 'SLVO', 'ZIM']
 
-single_list = ['ORC']
+single_list = ['mvo', 'clm']
 
-for stock in single_list:
+for stock in etf_list:
     run = SearchForStockData(stock)
-    run.benjamin_graham_intrinsic_value()
+    iv_dict = run.benjamin_graham_intrinsic_value()
+    for key, value in iv_dict.items():
+        print(f'{key}: {value}')

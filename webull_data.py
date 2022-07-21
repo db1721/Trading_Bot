@@ -1,6 +1,5 @@
 import json
-
-from webull import paper_webull # for paper trading, import 'paper_webull'
+from webull import webull # for paper trading, import 'paper_webull'
 
 
 class WebullData:
@@ -12,10 +11,17 @@ class WebullData:
         https://www.youtube.com/watch?v=fqBOePxsCDQ
         https://www.youtube.com/watch?v=3w3ZNQniSbU&t=0s
         """
-        self.wb = paper_webull()
-        self.login_to_webull()
+        self.wb = webull()
+        # self.login_to_webull()
 
         self.email = 'danielbeck783@msn.com'
+
+        # self.wb.get_mfa(self.email)
+
+        results = self.wb.login('danielbeck783@msn.com', 'Millie1721!', 'Python Trading Bot', '161061')
+        self.wb.get_trade_token('Millie1721!')
+        account = self.wb.get_account()
+        print(account)
 
     def login_to_webull(self):
         """
@@ -28,6 +34,7 @@ class WebullData:
 
         # print(credential_data)
         self.wb._refresh_token = credential_data['refreshToken']
+
     def get_all_stocks(self):
         """
 
@@ -37,4 +44,4 @@ class WebullData:
 
 
 web = WebullData()
-web.get_all_stocks()
+# web.get_all_stocks()

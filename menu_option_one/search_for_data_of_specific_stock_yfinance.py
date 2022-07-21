@@ -29,14 +29,14 @@ class SearchForStockData:
         # ticker_data.actions
 
         # show dividends
-        # self.ticker_data.dividends
+        # print(self.ticker_data.dividends)
 
         # show splits
         # self.ticker_data.splits
 
         # show financials
-        # self.ticker_data.financials
-        # self.ticker_data.quarterly_financials
+        # print(self.ticker_data.financials)
+        # print(self.ticker_data.quarterly_financials)
 
         # show major holders
         # self.ticker_data.major_holders
@@ -45,7 +45,7 @@ class SearchForStockData:
         # self.ticker_data.institutional_holders
 
         # show balance sheet
-        # self.ticker_data.balance_sheet
+        # print(self.ticker_data.balance_sheet)
         # self.ticker_data.quarterly_balance_sheet
 
         # show cashflow
@@ -91,34 +91,111 @@ class SearchForStockData:
         try:
             eps = 0
             growth_rate = 0
-            yield_of_current_bond = 2.57  # Find a way to fetch this
+            current_price = 0
+            margin_of_safety = .65
+            buy_or_sell = ''
+            value_difference = 0
+            yield_of_current_bond = 3.8  # Find a way to fetch this
+            iv_dict = {}
+
+            # Get stock price
             for key, value in self.info.items():
-                if key == 'trailingEps':
-                    # print(f'EPS: {value}')
-                    eps = value
-                if key == 'sss':
-                    # print(f'{key}: {value}')
-                    growth_rate = value
                 # print(f'{key}: {value}')
+                if key == 'currentPrice' and str(value) != 'None':
+                    # print(f'Current Price: {value}')
+                    current_price = value
+                    break
 
-            analysis = self.ticker_data.get_analysis(as_dict=True)
-            for key, value in analysis.items():
-                if key == 'Growth':
-                    for key2, value2 in value.items():
-                        if key2 == '0Y':
-                            # print(f'Growth Rate: {value2}')
-                            growth_rate = value2
+            try:
+                # Get EPS
+                for key, value in self.info.items():
+                    # print(f'{key}: {value}')
+                    if key == 'forwardEps' and str(value) != 'None':
+                        # print(f'EPS (Forward): {value}')
+                        eps = value
+                        break
+                    if key == 'trailingEps':
+                        # print(f'EPS (Trailing): {value}')
+                        eps = value
+                        break
+            except:
+                pass
 
-            if eps is None:
-                eps = 0
-            if growth_rate is None:
-                growth_rate = 0
+            # financials = self.ticker_data.financials
+            # for key, value in financials.items():
+            #     print(f'{key}: {value}')
 
-            intrinsic_value = (eps * (8.5 + (2 * growth_rate)) * 4.4) / yield_of_current_bond
+            try:
+                # Get growth
+                analysis = self.ticker_data.get_analysis(as_dict=True)
+                for key, value in analysis.items():
+                    # print(f'{key}: {value}')
+                    if key == 'Growth':
+                        for key2, value2 in value.items():
+                            if key2 == '0Q' and str(value2) != 'nan' and str(value2) != 'None':
+                                # print(f'Growth Rate (0Q): {value2}')
+                                growth_rate = value2
+                                break
+                            elif key2 == '+1Q' and str(value2) != 'nan' and str(value2) != 'None':
+                                # print(f'Growth Rate (+1Q): {value2}')
+                                growth_rate = value2
+                                break
+                            elif key2 == '0Y' and str(value2) != 'nan' and str(value2) != 'None':
+                                # print(f'Growth Rate (0Y): {value2}')
+                                growth_rate = value2
+                                break
+                            elif key2 == '+1Y' and str(value2) != 'nan' and str(value2) != 'None':
+                                # print(f'Growth Rate (+1Y): {value2}')
+                                growth_rate = value2
+                                break
+                            elif key2 == '+5Y' and str(value2) != 'nan' and str(value2) != 'None':
+                                # print(f'Growth Rate (+5Y): {value2}')
+                                growth_rate = value2
+                                break
+            except:
+                pass
+
+            try:
+                # Another check for growth
+                if growth_rate == 0:
+                    for key, value in self.info.items():
+                        if key == 'revenueGrowth' and str(value) != 'nan' and str(value) != 'None':
+                            # print(f'Growth Rate (Revenue): {value}')
+                            growth_rate = value
+            except:
+                pass
+
+            # Force to break it if data not found
+            if eps == 0:
+                eps = None
+            if growth_rate == 0:
+                growth_rate = None
+
+            # # Calculate Intrinsic Value (Original)
+            # intrinsic_value = (eps * (8.5 + (2 * growth_rate)) * 4.4) / yield_of_current_bond
+            # formatted_intrinsic_value = "{:0.2f}".format(intrinsic_value)
+
+            # Calculate Intrinsic Value (Revised)
+            intrinsic_value = (eps * (7 + growth_rate) * 4.4) / yield_of_current_bond
             formatted_intrinsic_value = "{:0.2f}".format(intrinsic_value)
-            print(f'{self.ticker_symbol} Intrinsic Value: {formatted_intrinsic_value}')
+
+            # Calculate value difference
+            value_difference = current_price / intrinsic_value
+            value_difference = value_difference * 100
+            formatted_value_difference = "{:0.2f}".format(value_difference)
+
+            # Acceptable buy price
+            acceptable_buy_price = margin_of_safety * intrinsic_value
+            formatted_acceptable_buy_price = "{:0.2f}".format(acceptable_buy_price)
+
+            # print(f'{self.ticker_symbol} Intrinsic Value ${formatted_intrinsic_value} at '
+            #       f'${formatted_acceptable_buy_price} at a value of {formatted_value_difference}%')
+
+            iv_dict.update({self.ticker_symbol: f'{formatted_value_difference}%'})
+            return iv_dict
         except:
-            print(f'{self.ticker_symbol} raised an error')
+            # print(f'{self.ticker_symbol} does not have Intrinsic Value')
+            pass
 
     def print_stock_info(self):
         """
@@ -131,5 +208,5 @@ class SearchForStockData:
 
 
 if __name__ == '__main__':
-    run = SearchForStockData('xyld')
-    run.print_stock_info()
+    run = SearchForStockData('iep')
+    # run.print_stock_info()
