@@ -121,18 +121,30 @@ class SearchForStockData:
                 print(self.ticker_symbol)
                 total_weight = 0.0
                 self.aggregate_total = 0.0
+                aggregate_percentages = []
                 for stock, percent in holding_dict.items():
-                    # print(f'    {stock}: {percent*100}')
+                    print(f'    {stock} ETF weight: {percent*100}')
                     total_weight += percent*100
+                    aggregate_percentages.append(percent)
                     self._do_the_thing(stock.strip(), callout=False)
 
-                # intrinsic_value_data = self._calculate_intrinsic_value(self.aggregate_total)
+                temp_aggregate_intrinsic_value = 0
+                for index, percent in enumerate(aggregate_percentages):
+                    if index == 0:
+                        temp_aggregate_intrinsic_value = percent
+                    else:
+                        temp_aggregate_intrinsic_value = temp_aggregate_intrinsic_value * percent
+
+                temp_value = (total_weight / 100) * self.aggregate_total
+                formatted_temp_value = "{:0.2f}".format(temp_value)
 
                 # print(f'    Total Percentage: {total_weight}')
-                print(f'    Aggregate Intrinsic Value: {self.aggregate_total}')
+                print(f'    Aggregate Intrinsic Value: {total_weight} {self.aggregate_total} {formatted_temp_value}')
 
                 # if self.aggregate_total != 0:
                 #     print(self.aggregate_total)
+
+                aggregate_percentages.clear()
             except:
                 print(f'{self.ticker_symbol} does not have Intrinsic Value')
                 pass
@@ -187,10 +199,10 @@ class SearchForStockData:
 
         self.aggregate_total += float(intrinsic_value_data[0])
 
-        return iv_dict.update({self.ticker_symbol: [self.value_difference, intrinsic_value_data[2]]})
+        return {self.ticker_symbol: [self.value_difference, intrinsic_value_data[2]]}
 
     def print_callout(self, data_list):
-        print(f'{self.ticker_symbol}: {data_list[1]}% @ ${data_list[2]} '
+        print(f'{self.ticker_symbol} intrinsic value is {data_list[0]}: {data_list[1]}% @ ${data_list[2]} '
               f'for a rebate of ${data_list[3]}')
 
     def _get_eps(self):
@@ -273,6 +285,7 @@ class SearchForStockData:
         :return:
         """
         yield_of_current_bond = 3.8  # Find a way to fetch this
+        intrinsic_value = 0.0
 
         if supplied_intrinsic_value == 0.0:
             # # Calculate Intrinsic Value (Original)
