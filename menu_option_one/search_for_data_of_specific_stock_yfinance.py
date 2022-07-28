@@ -118,33 +118,46 @@ class SearchForStockData:
                                 if symbol != '' and holding_percentage > 0:
                                     holding_dict.update({symbol: holding_percentage})
 
-                print(self.ticker_symbol)
+                temp_ticker = self.ticker_symbol
                 total_weight = 0.0
                 self.aggregate_total = 0.0
                 aggregate_percentages = []
+                intrinsic_value_list = []
+                intrinsic_value_total = 0.0
                 for stock, percent in holding_dict.items():
-                    print(f'    {stock} ETF weight: {percent*100}')
+                    # print(f'    {stock} ETF weight: {percent*100}')
                     total_weight += percent*100
                     aggregate_percentages.append(percent)
-                    self._do_the_thing(stock.strip(), callout=False)
+                    intrinsic_value_data = self._do_the_thing(stock.strip(), callout=False)
 
-                temp_aggregate_intrinsic_value = 0
-                for index, percent in enumerate(aggregate_percentages):
-                    if index == 0:
-                        temp_aggregate_intrinsic_value = percent
-                    else:
-                        temp_aggregate_intrinsic_value = temp_aggregate_intrinsic_value * percent
+                    intrinsic_value_total += float(intrinsic_value_data[0]) * percent
+                    # print(intrinsic_value_total)
 
-                temp_value = (total_weight / 100) * self.aggregate_total
-                formatted_temp_value = "{:0.2f}".format(temp_value)
+                self.ticker_symbol = temp_ticker
+                self._get_stock_price()
+
+                # Calculate value difference
+                value_difference = self.current_price / intrinsic_value_total
+                self.value_difference = value_difference * 100
+                formatted_value_difference = "{:0.2f}".format(self.value_difference)
+
+                # Acceptable buy price
+                acceptable_buy_price = self.margin_of_safety * intrinsic_value_total
+                formatted_acceptable_buy_price = "{:0.2f}".format(acceptable_buy_price)
+
+                # Savings
+                savings = float(self.current_price) - float(formatted_acceptable_buy_price)
+                formatted_savings = "{:0.2f}".format(savings)
+
+                print(f'{self.ticker_symbol} intrinsic value is {intrinsic_value_total}: '
+                      f'{formatted_value_difference}% @ ${formatted_acceptable_buy_price} '
+                      f'for a rebate of ${formatted_savings}')
 
                 # print(f'    Total Percentage: {total_weight}')
-                print(f'    Aggregate Intrinsic Value: {total_weight} {self.aggregate_total} {formatted_temp_value}')
-
-                # if self.aggregate_total != 0:
-                #     print(self.aggregate_total)
+                # print(f'    Aggregate Intrinsic Value: {total_weight} {self.aggregate_total} {formatted_temp_value}')
 
                 aggregate_percentages.clear()
+                intrinsic_value_list.clear()
             except:
                 print(f'{self.ticker_symbol} does not have Intrinsic Value')
                 pass
@@ -194,12 +207,13 @@ class SearchForStockData:
 
         if callout:
             self.print_callout(intrinsic_value_data)
-        else:
-            print(f'    {self.ticker_symbol}: {intrinsic_value_data[0]}')
+        # else:
+        #     print(f'    {self.ticker_symbol}: {intrinsic_value_data[0]}')
 
         self.aggregate_total += float(intrinsic_value_data[0])
 
-        return {self.ticker_symbol: [self.value_difference, intrinsic_value_data[2]]}
+        return intrinsic_value_data
+        # return {self.ticker_symbol: [self.value_difference, intrinsic_value_data[2]]}
 
     def print_callout(self, data_list):
         print(f'{self.ticker_symbol} intrinsic value is {data_list[0]}: {data_list[1]}% @ ${data_list[2]} '
@@ -227,6 +241,8 @@ class SearchForStockData:
         Retrieves the current stock's price
         :return:
         """
+        self.info = self.ticker_data.info
+
         # Get stock price
         for key, value in self.info.items():
             # print(f'{key}: {value}')
