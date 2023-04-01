@@ -1,10 +1,16 @@
+from utilities.all_utilities import AllUtilities
+from stock_data.search_for_data_of_specific_stock_yfinance import SearchForStockData
+from utilities.database_queries import Database
+
+
 class Calculations:
-    def __init__(self, ticker_symbol):
+    def __init__(self, ticker_symbol=None):
         """
         https://www.omnicalculator.com/finance#s-8
         :param ticker_symbol:
         """
         self.symbol = ticker_symbol
+        self.utilities = AllUtilities()
 
     def benjamin_graham_intrinsic_value(self, earnings_per_share, stock_growth_rate):
         """
@@ -26,3 +32,19 @@ class Calculations:
             print(f'{self.symbol} Intrinsic Value: {formatted_intrinsic_value}')
         except:
             print(f'{self.symbol} raised an error')
+
+    @staticmethod
+    def calculate_total_value_of_portfolio():
+        """
+        Calculates total value of portfolio
+        :return:
+        """
+        db = Database()
+        for key, value in db.get_portfolio().items():
+            if len(key) > 0:
+                stock_search = SearchForStockData(key)
+                print(stock_search.current_price * value['quantity'])
+
+
+run = Calculations()
+run.calculate_total_value_of_portfolio()

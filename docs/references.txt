@@ -1,0 +1,8 @@
+CSV
+https://docs.python.org/3/library/csv.html
+https://realpython.com/python-csv/
+
+Stock Research
+https://www.alpharithms.com/python-financial-data-491110/
+https://towardsdatascience.com/how-to-get-stock-data-using-python-c0de1df17e75
+https://pypi.org/project/yfinance/

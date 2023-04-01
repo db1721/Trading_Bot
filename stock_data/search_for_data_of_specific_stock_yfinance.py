@@ -2,9 +2,6 @@ import yfinance as yf
 
 
 class SearchForStockData:
-    # https: // www.alpharithms.com / python - financial - data - 491110 /
-    # https: // towardsdatascience.com / how - to - get - stock - data - using - python - c0de1df17e75
-    # https: // pypi.org / project / yfinance /
     def __init__(self, stock_to_search):
         self.ticker_symbol = stock_to_search.upper()
 
@@ -330,6 +327,6 @@ class SearchForStockData:
                 formatted_savings, acceptable_buy_price]
 
 
-if __name__ == '__main__':
-    run = SearchForStockData('iep')
-    # run.print_stock_info()
+# if __name__ == '__main__':
+#     run = SearchForStockData('iep')
+#     # run.print_stock_info()

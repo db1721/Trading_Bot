@@ -2,7 +2,7 @@ import finnhub
 import pandas as pd
 import yfinance as yf
 
-from calculations.calculations import Calculations
+from utilities.calculations.calculations import Calculations
 
 stock_ticker = 'iep'.upper()
 

@@ -1,4 +1,4 @@
-from menu_option_one.search_for_data_of_specific_stock_yfinance import SearchForStockData
+from stock_data.search_for_data_of_specific_stock_yfinance import SearchForStockData
 
 etf_list = ['ORC', 'CSCO', 'IBM', 'CRF', 'CLM', 'ARR', 'IVR', 'NYMT', 'AGNC', 'EFC', 'O', 'DX', 'NLY', "STAG", 'RYLD',
             'XYLD', 'MVO', 'IEP', 'QYLD', 'LDI', 'ECC', 'GAIN', 'YYY', 'GECC', 'KBWD', 'OKE', 'RA', 'TROW',
