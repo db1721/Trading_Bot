@@ -2,6 +2,7 @@ import csv
 import os
 import pandas
 
+from stock_data.search_for_data_of_specific_stock_yfinance import SearchForStockData
 from utilities.all_utilities import AllUtilities
 
 
@@ -11,6 +12,7 @@ class Database:
         self._database_file_path = os.path.join(self._util.direct.get_database_directory(), 'portfolio.csv')
         self._fieldnames = ['ticker_symbol', 'portfolio_weight', 'quantity']
         self._portfolio = {}
+        self._total_portfolio_weight = 0
 
     def write_portfolio(self, initial_portfolio_build):
         """
@@ -57,9 +59,31 @@ class Database:
         self._retrieve_portfolio()
         return self._portfolio
 
+    def get_portfolio_weight(self):
+        """
+
+        :return:
+        """
+        pass
+
+    def try_adding_stock(self, stock_to_add):
+        """
+        Trys adding the stock to the portfolio
+        :param stock_to_add:
+        :return:
+        """
+        stock_data = SearchForStockData(stock_to_add)
+        if str(stock_data.current_price).isnumeric():
+            print(stock_to_add)
+
     def print_formatted_portfolio(self):
+        """
+        Prints all the data in the database
+        :return:
+        """
         df = pandas.read_csv(self._database_file_path)
         print(df)
+        print(f'{self._total_portfolio_weight}')
 
 
 # run = Database()

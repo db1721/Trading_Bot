@@ -25,7 +25,10 @@ class SearchForStockData:
         # print(ticker_df)
 
         # get stock info
-        self.info = self.ticker_data.info
+        try:
+            self.info = self.ticker_data.info
+        except AttributeError:
+            return ''
 
         # get historical market data
         # hist = self.ticker_data.history(period="max")
