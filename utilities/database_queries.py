@@ -4,6 +4,7 @@ import pandas
 
 from stock_data.search_for_data_of_specific_stock_yfinance import SearchForStockData
 from utilities.all_utilities import AllUtilities
+from utilities.calculations.calculations import Calculations
 
 
 class Database:
@@ -13,6 +14,9 @@ class Database:
         self._fieldnames = ['ticker_symbol', 'user_set_portfolio_weight', 'auto_balanced_portfolio_weight', 'quantity']
         self._portfolio = {}
         self._total_portfolio_weight = 0
+        self._calculations = Calculations()
+
+        self._retrieve_portfolio()
 
     def write_portfolio(self, initial_portfolio_build):
         """
@@ -50,6 +54,8 @@ class Database:
                                                                  'auto_balanced_portfolio_weight'],
                                                              'quantity': row['quantity']}
                 line_count += 1
+
+            # Keep for debugging
             # for key, value in self._portfolio.items():
             #     print(f'***{key}***')
             #     for key2, value2, in value.items():
@@ -60,7 +66,6 @@ class Database:
         Retrieve portfolio in dictionary format
         :return: portfolio in dictionary format
         """
-        self._retrieve_portfolio()
         return self._portfolio
 
     def find_specific_stock_data_from_portfolio(self, stock, header):
@@ -70,19 +75,24 @@ class Database:
         :param header:
         :return:
         """
-        self._retrieve_portfolio()
-        print(self._portfolio[stock][header])
+        return self._portfolio[stock][header]
 
     def get_total_weight_of_current_portfolio(self):
         """
         Returns total weight of current portfolio
         :return: Total weight of current portfolio
         """
-        self._retrieve_portfolio()
         total_weight = 0.0
         for key, value in self._portfolio.items():
             total_weight += float(self._portfolio[key]['user_set_portfolio_weight'])
         return total_weight
+
+    def get_total_value_of_current_portfolio(self):
+        """
+        Returns total weight of current portfolio
+        :return: Total weight of current portfolio
+        """
+        self._calculations.calculate_total_value_of_portfolio(self._portfolio)
 
     def print_formatted_portfolio(self):
         """
@@ -95,4 +105,4 @@ class Database:
 
 
 run = Database()
-print(run.get_total_weight_of_current_portfolio())
+print(run.get_total_value_of_current_portfolio())

@@ -1,12 +1,11 @@
 from utilities.all_utilities import AllUtilities
 from stock_data.search_for_data_of_specific_stock_yfinance import SearchForStockData
-from utilities.database_queries import Database
 
 
 class Calculations:
     def __init__(self, ticker_symbol=None):
         """
-        https://www.omnicalculator.com/finance#s-8
+
         :param ticker_symbol:
         """
         self.symbol = ticker_symbol
@@ -34,17 +33,22 @@ class Calculations:
             print(f'{self.symbol} raised an error')
 
     @staticmethod
-    def calculate_total_value_of_portfolio():
+    def calculate_total_value_of_portfolio(portfolio):
         """
         Calculates total value of portfolio
+        :param portfolio:
         :return:
         """
-        db = Database()
-        for key, value in db.get_portfolio().items():
+        total_value = 0.0
+        for key, value in portfolio.items():
             if len(key) > 0:
                 stock_search = SearchForStockData(key)
-                print(stock_search.current_price * value['quantity'])
+                temp = stock_search.get_stock_price()
+                total_value += float(temp) * float(value['quantity'])
+
+        formatted_total_value = "{:0.2f}".format(total_value)
+        print(f'Portfolio Value: ${formatted_total_value}')
 
 
-run = Calculations()
-run.calculate_total_value_of_portfolio()
+# run = Calculations()
+# run.calculate_total_value_of_portfolio()

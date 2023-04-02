@@ -251,6 +251,22 @@ class SearchForStockData:
                 self.current_price = value
                 break
 
+    def get_stock_price(self):
+        """
+        Retrieves the current stock's price
+        :return:
+        """
+        self.info = self.ticker_data.info
+
+        # Get stock price
+        for key, value in self.info.items():
+            if key == 'currentPrice' and str(value) != 'None':
+                # print(f'Current Price: {value}')
+                return value
+            elif key == 'postMarketPrice' and str(value) != 'None':
+                # print(f'Last Market Price: {value}')
+                return value
+
     def _get_growth_secondary(self):
         """
         Retrieves the current stock's secondary growth rate if growth rate not found

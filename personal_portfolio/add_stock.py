@@ -49,9 +49,3 @@ class AddStock:
             else:
                 pass
 
-    def _get_added_stock(self):
-        """
-
-        :return:
-        """
-        pass
