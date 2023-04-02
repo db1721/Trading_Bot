@@ -10,13 +10,13 @@ class Database:
     def __init__(self):
         self._util = AllUtilities()
         self._database_file_path = os.path.join(self._util.direct.get_database_directory(), 'portfolio.csv')
-        self._fieldnames = ['ticker_symbol', 'portfolio_weight', 'quantity']
+        self._fieldnames = ['ticker_symbol', 'user_set_portfolio_weight', 'auto_balanced_portfolio_weight', 'quantity']
         self._portfolio = {}
         self._total_portfolio_weight = 0
 
     def write_portfolio(self, initial_portfolio_build):
         """
-
+        Writes portfolio to a csv file
         :param initial_portfolio_build:
         :return:
         """
@@ -25,8 +25,9 @@ class Database:
             writer.writeheader()
             for stock in initial_portfolio_build:
                 writer.writerow({'ticker_symbol': stock[0],
-                                 'portfolio_weight': stock[1],
-                                 'quantity': stock[2]})
+                                 'user_set_portfolio_weight': stock[1],
+                                 'auto_balanced_portfolio_weight': stock[2],
+                                 'quantity': stock[3]})
 
     def _retrieve_portfolio(self):
         """
@@ -43,7 +44,10 @@ class Database:
                     line_count += 1
                 else:
                     # Add data to portfolio dictionary
-                    self._portfolio[row['ticker_symbol']] = {'portfolio_weight': row['portfolio_weight'],
+                    self._portfolio[row['ticker_symbol']] = {'user_set_portfolio_weight': row[
+                        'user_set_portfolio_weight'],
+                                                             'auto_balanced_portfolio_weight': row[
+                                                                 'auto_balanced_portfolio_weight'],
                                                              'quantity': row['quantity']}
                 line_count += 1
             # for key, value in self._portfolio.items():
@@ -59,22 +63,26 @@ class Database:
         self._retrieve_portfolio()
         return self._portfolio
 
-    def get_portfolio_weight(self):
+    def find_specific_stock_data_from_portfolio(self, stock, header):
         """
-
+        Retrieves selected header data from portfolio
+        :param stock:
+        :param header:
         :return:
         """
-        pass
+        self._retrieve_portfolio()
+        print(self._portfolio[stock][header])
 
-    def try_adding_stock(self, stock_to_add):
+    def get_total_weight_of_current_portfolio(self):
         """
-        Trys adding the stock to the portfolio
-        :param stock_to_add:
-        :return:
+        Returns total weight of current portfolio
+        :return: Total weight of current portfolio
         """
-        stock_data = SearchForStockData(stock_to_add)
-        if str(stock_data.current_price).isnumeric():
-            print(stock_to_add)
+        self._retrieve_portfolio()
+        total_weight = 0.0
+        for key, value in self._portfolio.items():
+            total_weight += float(self._portfolio[key]['user_set_portfolio_weight'])
+        return total_weight
 
     def print_formatted_portfolio(self):
         """
@@ -86,5 +94,5 @@ class Database:
         print(f'{self._total_portfolio_weight}')
 
 
-# run = Database()
-# run.get_portfolio()
+run = Database()
+print(run.get_total_weight_of_current_portfolio())

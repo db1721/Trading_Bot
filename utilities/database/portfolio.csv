@@ -1,4 +1,1 @@
-ticker_symbol,portfolio_weight,quantity
-CLM,20,32.22
-CRF,20,32.22
-GOF,20,32.22
+ticker_symbol,user_set_portfolio_weight,auto_balanced_portfolio_weight,quantityCLM,10,10,32.22CRF,10,10,32.22GOF,10,10,32.22
